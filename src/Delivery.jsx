@@ -90,26 +90,72 @@ await updateDoc(doc(db, "inventory", fromInvDoc.id), {
     delivery.status === "in_transit" && currentUser.uid === delivery.fromCenterId;
 
   return (
-    <div>
-      <h1>Delivery Details</h1>
-      <Link to="/requests">Back to Requests</Link>
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-cyan-50 to-teal-100 p-6">
+     <div className="bg-gradient-to-r from-teal-600 via-cyan-500 to-blue-600 rounded-3xl shadow-xl p-6 mb-8 flex justify-between items-center">
 
-      <p>Medicine: {delivery.medicineName}</p>
-      <p>Quantity: {delivery.quantity}</p>
-      <p>Status: {delivery.status}</p>
-      <p>From: {fromCenter ? fromCenter.name : "Loading..."}</p>
-      <p>To: {toCenter ? toCenter.name : "Loading..."}</p>
+  <div>
+    <h1 className="text-4xl font-bold text-white">
+      🚚 Delivery Details
+    </h1>
 
+    <p className="text-cyan-100 mt-2">
+      Track medicine transfer between healthcare centers.
+    </p>
+  </div>
+
+  <Link
+    to="/requests"
+    className="bg-white text-teal-700 px-5 py-3 rounded-xl font-semibold hover:bg-gray-100"
+  >
+    ← Requests
+  </Link>
+
+</div>
+<div className="bg-white rounded-3xl shadow-xl p-6 mb-8">
+
+<h2 className="text-2xl font-bold text-teal-700 mb-4">
+  📦 Delivery Information
+</h2>
+
+<p className="text-gray-700 mb-2">
+  💊 Medicine: <b>{delivery.medicineName}</b>
+</p>
+
+<p className="text-gray-700 mb-2">
+  🔢 Quantity: <b>{delivery.quantity}</b>
+</p>
+<p className="text-gray-700 mb-2">
+  🚦 Status:
+  {delivery.status === "in_transit" ? (
+    <span className="ml-2 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm">
+      In Transit
+    </span>
+  ) : (
+    <span className="ml-2 bg-green-500 text-white px-3 py-1 rounded-full text-sm">
+      Completed
+    </span>
+  )}
+</p>
+<p className="text-gray-700 mb-2">
+  🏥 From: <b>{fromCenter ? fromCenter.name : "Loading..."}</b>
+</p>
+
+<p className="text-gray-700">
+  🏥 To: <b>{toCenter ? toCenter.name : "Loading..."}</b>
+</p>
+
+</div>
       {fromCenter && toCenter && (
-        <div style={{ height: "400px", width: "100%" }}>
-          <MapContainer
-            center={[
-              (fromCenter.latitude + toCenter.latitude) / 2,
-              (fromCenter.longitude + toCenter.longitude) / 2
-            ]}
-            zoom={8}
-            style={{ height: "100%", width: "100%" }}
-          >
+       <div className="bg-white rounded-3xl shadow-xl p-4 overflow-hidden mb-8">
+  <div style={{ height: "400px", width: "100%" }}>
+         <MapContainer
+  center={[
+    (fromCenter.latitude + toCenter.latitude) / 2,
+    (fromCenter.longitude + toCenter.longitude) / 2
+  ]}
+  zoom={8}
+  style={{ height: "100%", width: "100%" }}
+>
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution="&copy; OpenStreetMap contributors"
@@ -128,11 +174,19 @@ await updateDoc(doc(db, "inventory", fromInvDoc.id), {
               color="blue"
             />
           </MapContainer>
-        </div>
+        
+      </div>
+      </div>
+
       )}
 
       {canMarkDelivered && (
-        <button onClick={handleMarkDelivered}>Mark as Delivered</button>
+        <button
+  onClick={handleMarkDelivered}
+  className="bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-bold px-6 py-3 rounded-xl hover:scale-105 hover:shadow-lg transition"
+>
+  ✅ Mark as Delivered
+</button>
       )}
     </div>
   );

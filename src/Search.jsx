@@ -61,61 +61,95 @@ function Search() {
     setRequestedIds([...requestedIds, item.id]);
     alert("Request sent successfully!");
   }
+    return(
+  <div className="min-h-screen bg-gradient-to-br from-slate-100 via-cyan-50 to-teal-100 p-6">
+    <div className="bg-gradient-to-r from-teal-600 via-cyan-500 to-blue-600 rounded-3xl shadow-xl p-6 mb-8 flex justify-between items-center">
 
-  return (
-    <div>
-      <h1>Search Medicine</h1>
-      <Link to="/dashboard">Back to Dashboard</Link>
+      <div>
+        <h1 className="text-4xl font-bold text-white">
+          🔍 Medicine Search
+        </h1>
 
-      <form onSubmit={handleSearch}>
-        <input
-          type="text"
-          placeholder="Search medicine (e.g. Paracetamol)"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          required
-        />
-        <button type="submit">Search</button>
-      </form>
+        <p className="text-cyan-100 mt-2">
+          Search medicines across all healthcare centers.
+        </p>
+      </div>
 
-      {hasSearched && results.length === 0 && <p>No results found.</p>}
+      <Link
+        to="/dashboard"
+        className="bg-white text-teal-700 px-5 py-3 rounded-xl font-semibold hover:bg-gray-100"
+      >
+        ← Dashboard
+      </Link>
 
-      <table border="1">
-        <thead>
-          <tr>
-            <th>Center</th>
-            <th>Quantity</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {results.map((item) => (
-            <tr key={item.id}>
-              <td>{item.centerName}{item.isOwnCenter ? " (You)" : ""}</td>
-              <td>{item.quantity}</td>
-              <td>
-                {item.quantity === 0
-                  ? "Out of Stock"
-                  : item.quantity <= item.lowStockThreshold
-                  ? "Low Stock"
-                  : "In Stock"}
-              </td>
-              <td>
-                {!item.isOwnCenter && item.quantity > 0 && (
-                  requestedIds.includes(item.id) ? (
-                    <span>Requested</span>
-                  ) : (
-                    <button onClick={() => handleRequest(item)}>Request</button>
-                  )
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
-  );
+    <form
+      onSubmit={handleSearch}
+      className="bg-white rounded-3xl shadow-xl p-6 mb-8 flex gap-4"
+    >
+      <input
+        type="text"
+        placeholder="Search medicine (e.g. Paracetamol)"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        required
+        className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
+      />
+      <button
+        type="submit"
+        className="bg-gradient-to-r from-teal-500 to-cyan-500 text-white px-8 rounded-xl font-semibold hover:scale-105 transition"
+      >
+        Search
+      </button>
+    </form>
+
+    {hasSearched && results.length === 0 && <p>No results found.</p>}
+
+    <table className="w-full bg-white rounded-3xl shadow-xl overflow-hidden">
+      <thead className="bg-teal-600 text-white">
+        <tr>
+          <th className="p-3">Center</th>
+          <th className="p-3">Quantity</th>
+          <th className="p-3">Status</th>
+          <th className="p-3">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {results.map((item) => (
+          <tr key={item.id} className="border-b hover:bg-cyan-50 transition">
+            <td>{item.centerName}{item.isOwnCenter ? " (You)" : ""}</td>
+            <td>{item.quantity}</td>
+            <td className="p-3">
+              {item.quantity === 0 ? (
+                <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm">
+                  Out of Stock
+                </span>
+              ) : item.quantity <= item.lowStockThreshold ? (
+                <span className="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm">
+                  Low Stock
+                </span>
+              ) : (
+                <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm">
+                  In Stock
+                </span>
+              )}
+            </td>
+            <td>
+              {!item.isOwnCenter && item.quantity > 0 && (
+                requestedIds.includes(item.id) ? (
+                  <span>Requested</span>
+                ) : (
+                  <button onClick={() => handleRequest(item)}>Request</button>
+                )
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+    );
+
 }
 
 export default Search;

@@ -105,33 +105,65 @@ if (request.quantityRequested > stock) {
   }
 
   return (
+   <div className="min-h-screen bg-gradient-to-br from-slate-100 via-cyan-50 to-teal-100 p-6"> 
+     <div className="bg-gradient-to-r from-teal-600 via-cyan-500 to-blue-600 rounded-3xl shadow-xl p-6 mb-8 flex justify-between items-center"> 
     <div>
-      <h1>Requests</h1>
-      <Link to="/dashboard">Back to Dashboard</Link>
+    <h1 className="text-4xl font-bold text-white">
+      📦 Medicine Requests
+    </h1>
 
-      <h2>Incoming Requests (from other centers)</h2>
-      <table border="1">
+    <p className="text-cyan-100 mt-2">
+      Manage incoming and outgoing medicine requests.
+    </p>
+  </div>
+
+  <Link
+    to="/dashboard"
+    className="bg-white text-teal-700 px-5 py-3 rounded-xl font-semibold hover:bg-gray-100 transition"
+  >
+    ← Dashboard
+  </Link>
+
+</div>
+
+     <h2 className="text-2xl font-bold text-teal-700 mb-4">
+  📥 Incoming Requests
+</h2>
+     <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 overflow-x-auto">
+
+<table className="w-full">
         <thead>
           <tr>
-            <th>Requesting Center</th>
-            <th>Medicine</th>
-            <th>Quantity</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th className="p-3 text-left">Requesting Center</th>
+<th className="p-3 text-left">Medicine</th>
+<th className="p-3 text-left">Quantity</th>
+<th className="p-3 text-left">Status</th>
+<th className="p-3 text-left">Actions</th>
           </tr>
         </thead>
         <tbody>
   {incoming.map((r) => (
-    <tr key={r.id}>
-      <td>{centerNames[r.requestingCenterId] || "Loading..."}</td>
-      <td>{r.medicineName}</td>
-      <td>{r.quantityRequested}</td>
-      <td>{r.status}</td>
-      <td>
+    <tr key={r.id} className="border-b hover:bg-cyan-50 transition">
+      <td classname="p-3">{centerNames[r.requestingCenterId] || "Loading..."}</td>
+      <td classname="p-3">{r.medicineName}</td>
+      <td classname="p-3">{r.quantityRequested}</td>
+      <td classname="p-3">{r.status}</td>
+      <td classname="p-3">
         {r.status === "pending" && (
           <>
-            <button onClick={() => handleApprove(r)}>Approve</button>
-            <button onClick={() => handleReject(r.id)}>Reject</button>
+           <button
+  onClick={() => handleApprove(r)}
+  className="bg-green-500 text-white px-4 py-2 rounded-lg mr-2 hover:bg-green-600"
+>
+  Approve
+</button>
+
+<button
+  onClick={() => handleReject(r.id)}
+  className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+>
+  Reject
+</button>
           </>
         )}
         {r.status === "approved" && (
@@ -142,28 +174,53 @@ if (request.quantityRequested > stock) {
   ))}
 </tbody>
       </table>
+      </div>
+      
 
-      <h2>Outgoing Requests (sent by you)</h2>
-      <table border="1">
+     <h2 className="text-2xl font-bold text-teal-700 mb-4 mt-8">
+  📤 Outgoing Requests
+</h2>
+     <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 overflow-x-auto">
+
+<table className="w-full">
         <thead>
           <tr>
-            <th>Fulfilling Center</th>
-            <th>Medicine</th>
-            <th>Quantity</th>
-            <th>Status</th>
+            <th className="p-3 text-left">Fulfilling Center</th>
+<th className="p-3 text-left">Medicine</th>
+<th className="p-3 text-left">Quantity</th>
+<th className="p-3 text-left">Status</th>
           </tr>
         </thead>
         <tbody>
           {outgoing.map((r) => (
-            <tr key={r.id}>
-              <td>{centerNames[r.fulfillingCenterId] || "Loading..."}</td>
-              <td>{r.medicineName}</td>
-              <td>{r.quantityRequested}</td>
-              <td>{r.status}</td>
+            <tr key={r.id} className="border-b hover:bg-cyan-50 transition">
+              <td classname="p-3">{centerNames[r.fulfillingCenterId] || "Loading..."}</td>
+              <td classname="p-3">{r.medicineName}</td>
+              <td classname="p-3">{r.quantityRequested}</td>
+             <td className="p-3">
+  {r.status === "pending" && (
+    <span className="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm">
+      Pending
+    </span>
+  )}
+
+  {r.status === "approved" && (
+    <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm">
+      Approved
+    </span>
+  )}
+
+  {r.status === "rejected" && (
+    <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm">
+      Rejected
+    </span>
+  )}
+</td>
             </tr>
           ))}
         </tbody>
       </table>
+    </div>
     </div>
   );
 }
