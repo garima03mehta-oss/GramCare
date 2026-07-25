@@ -24,6 +24,17 @@ GramCare is a smart healthcare inventory management system for rural health cent
 
 ## Live Demo
 https://gram-care-ar4r.vercel.app/login
+
+## Future Enhancements
+
+- Offline support for low-connectivity areas
+- Real-time GPS tracking for medicine delivery vehicles
+- AI-based medicine demand prediction
+- Barcode/QR code scanning for medicines
+- SMS/Email notifications for low stock and delivery updates
+- District-level analytics and reporting
+- Multilingual support for healthcare workers
+- 
 ## Run Locally
 
 ```bash
@@ -34,5 +45,5 @@ npm run dev
 ```
 
 ## Team
-- Nisha Dahima
 - Garima Mehta
+- Nisha Dahima
