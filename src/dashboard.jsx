@@ -144,16 +144,21 @@ function Dashboard() {
   async function handleDelete(id) {
     await deleteDoc(doc(db, "inventory", id));
   }
-
   async function handleSendRequest(medicineName, suggestion) {
+  const qty = prompt("Enter quantity to request:");
+
+  if (!qty || isNaN(qty) || Number(qty) <= 0) {
+    return;
+  }
+
   try {
     await addDoc(collection(db, "requests"), {
-      medicineName,
-      fromCenterId: suggestion.centerId,
-      toCenterId: currentUser.uid,
-      quantity: 10, // Change if you want user-selected quantity
-      status: "Pending",
-      createdAt: serverTimestamp()
+      medicineName: medicineName,
+      requestingCenterId: currentUser.uid,
+      fulfillingCenterId: suggestion.centerId,
+      quantityRequested: Number(qty),
+      status: "pending",
+      createdAt: new Date().toISOString()
     });
 
     alert("Request sent successfully!");
@@ -162,7 +167,6 @@ function Dashboard() {
     alert("Failed to send request.");
   }
 }
-
   async function handleLogout() {
     await signOut(auth);
     navigate("/login");
@@ -386,28 +390,36 @@ function Dashboard() {
             {suggestions[medName].length === 0 ? (
               <p>No surplus found at other centers.</p>
             ) : (
-              <div className="space-y-4">
-  {suggestions[medName].map((s, idx) => (
-    <div
-      key={idx}
-      className="border rounded-xl p-4 flex justify-between items-center"
-    >
-      <div>
-        <p><b>Center:</b> {s.centerName}</p>
-        <p><b>Distance:</b> {s.distance} km</p>
-        <p><b>Quantity:</b> {s.quantity}</p>
-        <p><b>Expiry:</b> {s.daysLeft} days</p>
-      </div>
+              <table className="w-full border-collapse bg-white rounded-xl overflow-hidden">
+               <thead className="bg-teal-600 text-white">
+  <tr>
+    <th className="p-3">Center</th>
+    <th className="p-3">Distance (km)</th>
+    <th className="p-3">Quantity Available</th>
+    <th className="p-3">Expiry (days left)</th>
+    <th className="p-3">Action</th>
+  </tr>
+</thead>
 
-      <button
-        onClick={() => handleSendRequest(medName, s)}
-        className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-      >
-        📩 Request
-      </button>
-    </div>
+<tbody>
+  {suggestions[medName].map((s, idx) => (
+    <tr key={idx}>
+      <td className="p-3">{s.centerName}</td>
+      <td className="p-3">{s.distance}</td>
+      <td className="p-3">{s.quantity}</td>
+      <td className="p-3">{s.daysLeft}</td>
+      <td className="p-3">
+        <button
+          onClick={() => handleSendRequest(medName, s)}
+          className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700"
+        >
+          📩 Request
+        </button>
+      </td>
+    </tr>
   ))}
-</div>
+</tbody>
+              </table>
             )}
           </div>
         ))}
