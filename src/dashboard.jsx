@@ -9,7 +9,8 @@ import {
   deleteDoc,
   doc,
   getDoc,
-  getDocs
+  getDocs,
+  serverTimestamp
 } from "firebase/firestore";
 import { calculateDistance, daysUntilExpiry, calculateRedistributionScore } from "./utils/distance";
 import { Bar } from "react-chartjs-2";
@@ -143,6 +144,24 @@ function Dashboard() {
   async function handleDelete(id) {
     await deleteDoc(doc(db, "inventory", id));
   }
+
+  async function handleSendRequest(medicineName, suggestion) {
+  try {
+    await addDoc(collection(db, "requests"), {
+      medicineName,
+      fromCenterId: suggestion.centerId,
+      toCenterId: currentUser.uid,
+      quantity: 10, // Change if you want user-selected quantity
+      status: "Pending",
+      createdAt: serverTimestamp()
+    });
+
+    alert("Request sent successfully!");
+  } catch (error) {
+    console.error(error);
+    alert("Failed to send request.");
+  }
+}
 
   async function handleLogout() {
     await signOut(auth);
@@ -367,26 +386,28 @@ function Dashboard() {
             {suggestions[medName].length === 0 ? (
               <p>No surplus found at other centers.</p>
             ) : (
-              <table className="w-full border-collapse bg-white rounded-xl overflow-hidden">
-                <thead className="bg-teal-600 text-white">
-                  <tr>
-                    <th>Center</th>
-                    <th>Distance (km)</th>
-                    <th>Quantity Available</th>
-                    <th>Expiry (days left)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {suggestions[medName].map((s, idx) => (
-                    <tr key={idx}>
-                      <td className="p-3">{s.centerName}</td>
-                      <td className="p-3">{s.distance}</td>
-                      <td className="p-3">{s.quantity}</td>
-                      <td className="p-3">{s.daysLeft}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className="space-y-4">
+  {suggestions[medName].map((s, idx) => (
+    <div
+      key={idx}
+      className="border rounded-xl p-4 flex justify-between items-center"
+    >
+      <div>
+        <p><b>Center:</b> {s.centerName}</p>
+        <p><b>Distance:</b> {s.distance} km</p>
+        <p><b>Quantity:</b> {s.quantity}</p>
+        <p><b>Expiry:</b> {s.daysLeft} days</p>
+      </div>
+
+      <button
+        onClick={() => handleSendRequest(medName, s)}
+        className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+      >
+        📩 Request
+      </button>
+    </div>
+  ))}
+</div>
             )}
           </div>
         ))}
